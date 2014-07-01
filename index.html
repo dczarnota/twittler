@@ -39,6 +39,19 @@
 
     <div class="container">
 
+    <div class="btn-group">
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        Home <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" id="dd-menu" role="menu">
+        <li><a href="#" id="home">Home</a></li>
+        <li><a href="#" id="shawn" >shawndrost</a></li>
+        <li><a href="#" id="mracus">mracus</a></li>
+        <li><a href="#" id="douglas">douglascalhoun</a></li>
+        <li><a href="#" id="sharks">sharksforcheap</a></li>
+      </ul>
+    </div>
+
       <div class="starter-template">
         <h1>Timeline</h1>
         <button id="button" type="button" class="btn btn-default">Get Tweets</button>
@@ -53,9 +66,21 @@
         while(index >= 0){
           var tweet = streams.home[index];
           var $tweet = $('<div></div>');
-          $('p').append('@' + tweet.user + ': ' + tweet.message + ' ' + '<small style=color:gray>' + time + "</small>" + '<br>');
+          $('p').append('<div href=user><a>' + '@' + tweet.user + ':' + '</a>' + ' ' +tweet.message + ' ' + '<small style=color:gray>' + time + "</small>" + '<br>' + '<br>' + '</div>');
           index -= 1;
         }
+
+        $('#dd-menu a').click(function(){
+          var username = $(this).text();
+          console.log(username);
+          for(var i=0; i<streams.users[username].length; i++){
+           tweet = streams.users[username];
+           time = Date();
+           console.log("tweet: " + tweet.user[username]);
+            $('p').empty().append('<div><a>' + '@' + tweet.user.username + ':' + '</a>' + ' ' +tweet.message + ' ' + '<small style=color:gray>' + time + "</small>" + '<br>' + '<br>' + '</div>');
+            $('#button').empty().prepend("Get Tweets");
+          }
+        });
         
         setInterval(function(){
           $('#button').empty().prepend(streams.home.length + " New Tweets");         
