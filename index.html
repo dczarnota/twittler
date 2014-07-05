@@ -41,7 +41,7 @@
 
     <div class="btn-group">
       <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-        Home <span class="caret"></span>
+        Select Timeline <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" id="dd-menu" role="menu">
         <li><a href="#" id="home">Home</a></li>
@@ -62,38 +62,87 @@
       $(document).ready(function(){
         var index = streams.home.length - 1;
         var time = Date();
+        var username = "Home";
 
+        //Get main timeline
         while(index >= 0){
           var tweet = streams.home[index];
           var $tweet = $('<div></div>');
-          $('p').append('<div href=user><a>' + '@' + tweet.user + ':' + '</a>' + ' ' +tweet.message + ' ' + '<small style=color:gray>' + time + "</small>" + '<br>' + '<br>' + '</div>');
+          $('p').append('<div href=user class=username><a>' + '@' + tweet.user + '</a>' + ': ' + tweet.message + ' ' + '<small style=color:gray>' + time + "</small>" + '<br>' + '<br>' + '</div>');
           index -= 1;
         }
 
-        $('#dd-menu a').click(function(){
-          var username = $(this).text();
-          console.log(username);
-          for(var i=0; i<streams.users[username].length; i++){
-           tweet = streams.users[username];
-           time = Date();
-           console.log("tweet: " + tweet.user[username]);
-            $('p').empty().append('<div><a>' + '@' + tweet.user.username + ':' + '</a>' + ' ' +tweet.message + ' ' + '<small style=color:gray>' + time + "</small>" + '<br>' + '<br>' + '</div>');
-            $('#button').empty().prepend("Get Tweets");
-          }
+        //Select user timeline from dropdown menu
+        $('#dd-menu a').on('click', function(){
+          username = $(this).text();
+          if(username === 'Home'){
+            location.reload();
+            $('p').empty();
+            index = streams.home.length - 1;
+            time = Date();
+            
+            while(index >= 0){
+            var tweet = streams.home[index];
+            var $tweet = $('<div></div>');
+            $('p').append('<div href=user class=username><a>' + '@' + tweet.user + '</a>' + ': ' + tweet.message + ' ' + '<small style=color:gray>' + time + "</small>" + '<br>' + '<br>' + '</div>');
+            index -= 1;
+           }
+
+          } else {
+          $('p').empty();
+            for(var i=0; i<streams.users[username].length; i++){
+             tweet = streams.users[username][i];
+             time = Date();
+              $('p').prepend('<div href=user class=username><a>' + '@' + username + '</a>' + ': ' + tweet.message + ' ' + '<small style=color:gray>' + time + "</small>" + '<br>' + '<br>' + '</div>');
+              $('#button').empty().prepend("Get Tweets");
+            }
+            $('#button').remove();
+          }  
         });
         
+        //Display number of new tweets as a button
         setInterval(function(){
-          $('#button').empty().prepend(streams.home.length + " New Tweets");         
+             $('#button').empty().prepend(streams.home.length + " New Tweets");         
           }, 3000);
 
-        $('#button').click(function(){
+        //Add new tweets to timeline
+        $('#button').on('click', function(){
           for(var i=0; i<streams.home.length; i++){
            tweet = streams.home[i];
            time = Date();
-           $('p').prepend('@' + tweet.user + ': ' + tweet.message + ' ' + '<small style=color:gray>' + time + '</small>' + '<br>');
+           $('p').prepend('<div href=user class=username><a>' + '@' + tweet.user + '</a>' + ': ' + tweet.message + ' ' + '<small style=color:gray>' + time + "</small>" + '<br>' + '<br>' + '</div>');
            $('#button').empty().prepend("Get Tweets");            
           }
+
+           //Select new user tweets 
+           $('.username a').on('click', function(){
+            username = $(this).text().replace(/[@]/g, '');
+
+            $('p').empty();
+            for(var i=0; i<streams.users[username].length; i++){
+             tweet = streams.users[username][i];
+             time = Date();
+              $('p').prepend('<div href=user class=username><a>' + '@' + username + '</a>' + ': ' + tweet.message + ' ' + '<small style=color:gray>' + time + "</small>" + '<br>' + '<br>' + '</div>');
+              $('#button').empty().prepend("Get Tweets");  
+            }
+            $('#button').remove();
+         });
         });
+
+        //Click on username to display all user tweets
+        $('.username a').on('click', function(){
+          username = $(this).text().replace(/[@]/g, '');
+
+          $('p').empty();
+          for(var i=0; i<streams.users[username].length; i++){
+           tweet = streams.users[username][i];
+           time = Date();
+            $('p').prepend('<div href=user class=username><a>' + '@' + username + '</a>' + ': ' + tweet.message + ' ' + '<small style=color:gray>' + time + "</small>" + '<br>' + '<br>' + '</div>');
+            $('#button').empty().prepend("Get Tweets");  
+          }
+          $('#button').remove();
+        });
+
       });
 
     </script>
